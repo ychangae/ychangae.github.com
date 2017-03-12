@@ -1,37 +1,73 @@
-<!doctype html>
-<!--[if lt IE 7]><html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
-<!--[if (IE 7)&!(IEMobile)]><html class="no-js lt-ie9 lt-ie8" lang="en"><![endif]-->
-<!--[if (IE 8)&!(IEMobile)]><html class="no-js lt-ie9" lang="en"><![endif]-->
-<!--[if gt IE 8]><!--> <html class="no-js" lang="en"><!--<![endif]-->
-<head>
-{% include head.html %}
-</head>
+---
+layout: default
+format: page
+---
+<main role="main" id="content" class="row">
+  <div class="{% if page.fullwidth == true %}small-12 columns{% else %}medium-8 medium-centered columns{% endif %}">
+    <article itemscope itemtype="http://schema.org/Article">
+      <meta content="{{ site.data.ui[site.lang].html_language }}" itemprop="inLanguage" />
+      <header>
 
-<body id="page">
+        {% include helper/_video_embed.html %}
 
-{% include navigation.html %}
+        {% if page.video or page.embed %}
+        {% elsif page.image %}
+        <figure>
+          <img src="{{ "/images/" | absolute_url }}{{ page.image }}" alt="{{ page.title | strip_html }}" itemprop="image">
 
-<div id="main" role="main">
-  <article class="entry">
-    {% if page.image.feature %}<img src="{{ site.url }}/images/{{ page.image.feature }}" class="entry-feature-image" alt="{{ page.title }}" {% if site.logo == null %}style="margin-top:0;"{% endif %}>{% if page.image.credit %}<p class="image-credit">Photo Credit: <a href="{{ page.image.creditlink }}">{{ page.image.credit }}</a></p>{% endif %}{% endif %}
-    <div class="entry-wrapper">
-      <header class="entry-header">
-        <h1 class="entry-title">{% if page.headline %}{{ page.headline }}{% else %}{{ page.title }}{% endif %}</h1>
+          {% if page.caption_url and page.caption %}
+          <figcaption>
+            <a href="{{ page.caption_url }}" target="_blank">{{ page.caption }}</a>
+          </figcaption>
+          {% elsif page.caption %}
+          <figcaption>
+            {{ page.caption }}
+          </figcaption>
+          {% endif %}
+        </figure>
+        {% endif %}
+
+
+        {% if page.link %}
+          <p class="subheadline">Link</p>
+        {% elsif page.subheadline %}
+          <p class="subheadline">{{ page.subheadline }}</p>
+        {% endif %}
+
+
+        <h1 itemprop="name headline">{{ page.title | remove: '<p>' | remove: '</p>' }}</h1>
       </header>
-      <div class="entry-content">
+
+
+      <div class="main-content" itemprop="articleSection">
+        {% if page.quote %}<blockquote style="margin: 0;">{{ page.quote }}</blockquote>{% endif %}
         {{ content }}
-      </div><!-- /.entry-content -->
-    </div><!-- /.entry-wrapper -->
-  </article>
-</div><!-- /#main -->
 
-<div class="footer-wrapper">
-  <footer role="contentinfo" class="entry-wrapper">
-    {% include footer.html %}
-  </footer>
-</div><!-- /.footer-wrapper -->
 
-{% include scripts.html %}
+        {% if page.link %}
+          <p><a class="button" href="{{ page.link }}" title="{{ site.data.ui[site.lang].source }} › {{ page.title }}">{{ site.data.ui[site.lang].check_out_link }}</a></p>
+        {% endif %}
 
-</body>
-</html>
+      </div><!-- /.content -->
+
+
+      {% if page.comments == true %}
+      {% include helper/_comments.html %}
+      {% endif %}
+
+
+      {% if page.show_meta == true %}
+      <footer>
+        <p><small>
+          {% if page.author %}{{ site.data.ui[site.lang].written_by }} {{ page.author }} // {% endif %}
+          {% capture time %}{{ page.date }}{% endcapture %}
+          <time datetime="{{ time | truncate: 13 | remove: '...' }}" itemprop="datePublished">{{ time | truncate: 13 | remove: '...' }}</time>
+        </small></p>
+      </footer>
+      {% endif %}
+
+
+      {% include helper/_pagination.html %}
+    </article>
+  </div>
+</main><!-- /.row -->
